@@ -1,3 +1,14 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def T(x, N=500):
+    suma = 0
+    for n in range(N):
+        tx = 2**n * x
+        diente = 2 * min(tx/2 - np.floor(tx/2), np.ceil(tx/2) - tx/2)
+        suma += (1/2)**n * diente
+    return 0.75 - suma
+
 def j_newton(fun, q, x0, tol, nmax):
     """
     Newton-Jackson method to find roots of a function.
@@ -42,3 +53,7 @@ def j_newton(fun, q, x0, tol, nmax):
     zero = x
     res = fx
     return zero, res, niter, curve
+
+
+
+
