@@ -1,0 +1,52 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def T(x, N=500):
+    suma = 0
+    for n in range(N):
+        tx = 2**n * x
+        diente = 2 * min(tx/2 - np.floor(tx/2), np.ceil(tx/2) - tx/2)
+        suma += (1/2)**n * diente
+    return 0.75 - suma
+
+plt.figure(figsize=(8, 6))
+
+Ite=500
+x0 = 2.374
+xn = x0
+q = 0.5
+epsilon = 1e-16
+
+xn_values = []
+
+for n in range(Ite):
+    fxn = T(xn)
+    xn_values.append(xn)  # Guardamos los valores para la gráfica
+    if abs(fxn) < epsilon:
+        print(f'Se encontró solución después de {n} iteraciones: {xn}')
+        break
+
+    if xn == 0:
+        print('Derivada cero. No se encontró solución.')
+        break
+
+    denominator = T(xn) - T(q * xn)
+    if denominator == 0:
+        print('División por cero detectada. No se encontró solución.')
+        break
+
+    xn = xn * (q * T(xn) - T(q * xn)) / denominator
+
+print(f'T(xn) final: {T(xn)}')
+
+x = np.linspace(0, 2, 1000)
+y = [T(xi) for xi in x]
+
+plt.plot(x, y, label=fr"Función de Takagi", color='b')
+plt.scatter(xn_values, [T(xi) for xi in xn_values], c='red', marker='o', label="Iteraciones")
+plt.plot(xn_values, [T(xi) for xi in xn_values], linestyle='-', color='red')  # Une los puntos con línea recta
+plt.axhline(0, color='black')
+plt.title(fr"Iteraciones en la Función de Takagi con derivada de Jackson")
+plt.legend()
+plt.grid(True)
+plt.show()
