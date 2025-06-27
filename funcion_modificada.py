@@ -1,5 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import plotly.express as px
+import plotly.graph_objects as go
+
+
 
 def T(x, N=500):
     suma = 0
@@ -8,6 +12,7 @@ def T(x, N=500):
         diente = 2 * min(tx - np.floor(tx), np.ceil(tx) - tx)
         suma += (1/2)**n * diente
     return suma
+
 
 def j_newton(fun, a, x0, tol, nmax):
     """
@@ -49,19 +54,23 @@ def j_newton(fun, a, x0, tol, nmax):
 
     zero = x
     res = fx
-    return zero, res, niter, curve
 
-a=0.34
 
-Jz, Jr, Jn, Jc = j_newton(fun=T, a = 0.34, x0=.2, tol=1e-5, nmax=500)
-Lx = np.linspace(0, 1, 1000)
-Ly = [T(x)-a for x in Lx]
-plt.figure(figsize=(8, 6))
-plt.plot(Lx, Ly, linewidth=1.2, label='f(x)')
-Jc = np.array(Jc)
-plt.plot(Jc[:, 0], Jc[:, 1], '.-', linewidth=1.2, markersize=8, label='Iteraciones')
-plt.grid(True)
-plt.title("Convergence of Newton method with Jackson derivative")
-plt.legend()
-print(f"\nCon la derivada de jackson se encontró la raíz {Jz:.6f} en {Jn} iteraciones f({Jz:.6f}) = {Jr:.6e}")
-plt.show()
+    Lx = np.linspace(0, 1, 1000)
+    Ly = [T(x)-a for x in Lx] 
+    
+
+    fig = go.Figure()
+
+    fig.add_trace(go.Scatter(x=Lx, y=Ly,
+                        mode='lines',
+                        name='lines'))
+
+    Jc = np.array(curve)
+
+
+    fig.add_trace(go.Scatter(x=Jc[:, 0], y=Jc[:, 1],
+                        mode='markers',
+                        name='iterations'))
+
+    return fig
